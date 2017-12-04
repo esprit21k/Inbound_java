@@ -1,3 +1,25 @@
+/* This file is part of Inbound Sample.
+
+The Inbound Sample is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The Inbound Sample is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with The Inbound.  If not, see <http://www.gnu.org/licenses/>.
+
+ * Program Work Flow
+ * 1. Receive xml message as a String.
+ * 2. Check form, retrieve parameters.
+ * 3. Write parameters in CSV log file.
+ *
+ */
+
 package src;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -16,6 +38,7 @@ public class Inbound {
 	
 	private final static DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 
+	// Parameters
 	private String timeStamp;
 	private String pushId;
 	private String inboundId;
@@ -45,6 +68,8 @@ public class Inbound {
 		writer.close();
 	}
 	
+	
+	// Getters for parameters
 	public String getTimeStamp() {
 		return timeStamp;
 	}
@@ -79,7 +104,8 @@ public class Inbound {
 		return datasetName;
 	}
 
-	public void parsing(String inboundMsg) throws Exception{
+	// This function parses String to parameters
+	private void parsing(String inboundMsg) throws Exception{
 		timeStamp = getValueFromExpression(inboundMsg, "/TRUMPIA/TIME_STAMP");
 		pushId = getValueFromExpression(inboundMsg, "/TRUMPIA/PUSH_ID");
 		inboundId = getValueFromExpression(inboundMsg, "/TRUMPIA/INBOUND_ID");
@@ -92,7 +118,8 @@ public class Inbound {
 		datasetId = getValueFromExpression(inboundMsg, "/TRUMPIA/DATASET_ID");
 	}
 	
-	public String getValueFromExpression(String xml, String expression) throws Exception{
+	// This function writes parameters in CSV file. 
+	private String getValueFromExpression(String xml, String expression) throws Exception{
 		DocumentBuilder builder = builderFactory.newDocumentBuilder();
 
 		Document xmlDocument = builder.parse(new ByteArrayInputStream(xml.getBytes()));
