@@ -25,6 +25,7 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -51,7 +52,7 @@ public class Inbound {
 	private String datasetId;
 	private String datasetName;
 	
-	public Inbound(String xml) throws Exception {
+	public Inbound(String xml) throws Exception  {
 		this.xml = xml;
 		if (getValueFromExpression(xml, "TRUMPIA").isEmpty()) {
 			return;
@@ -59,13 +60,7 @@ public class Inbound {
 		
 		parsing(xml);
 		
-		String trumpiaLog = "c:/documents/TrumpiaLog.csv";
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(trumpiaLog), "MS949"));
-		writer.write("SUBSCRIPTION_UID,"+getTimeStamp()+"\r\n");
-		writer.write("PHONENUMBER,"+getPhoneNumber()+"\r\n");
-		writer.write("KEYWORD,"+getKeyword()+"\r\n");
-		writer.write("CONTENTS,"+getContents()+"\r\n");
-		writer.close();
+		writeLog();
 	}
 	
 	
@@ -118,7 +113,7 @@ public class Inbound {
 		datasetId = getValueFromExpression(inboundMsg, "/TRUMPIA/DATASET_ID");
 	}
 	
-	// This function writes parameters in CSV file. 
+	// This functions get values from expression.
 	private String getValueFromExpression(String xml, String expression) throws Exception{
 		DocumentBuilder builder = builderFactory.newDocumentBuilder();
 
@@ -128,5 +123,16 @@ public class Inbound {
 		
 		String output = xPath.compile(expression).evaluate(xmlDocument);
 		return output;
+	}
+	
+	// This function writes parameters in CSV file. 
+	private void writeLog() throws IOException {
+		String trumpiaLog = "c:/documents/TrumpiaLog.csv";
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(trumpiaLog, true), "MS949"));
+		writer.write("SUBSCRIPTION_UID,"+getSubscriptionUid()+"\r\n");
+		writer.write("PHONENUMBER,"+getPhoneNumber()+"\r\n");
+		writer.write("KEYWORD,"+getKeyword()+"\r\n");
+		writer.write("CONTENTS,"+getContents()+"\r\n");
+		writer.close();
 	}
 }
