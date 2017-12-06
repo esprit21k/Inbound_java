@@ -35,8 +35,6 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 
 public class Inbound {
-	private String xml;
-	
 	private final static DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 
 	// Parameters
@@ -50,10 +48,13 @@ public class Inbound {
 	private String dataCapture;
 	private String attachment;
 	private String datasetId;
-	private String datasetName;
+	private String datasetName;	
 	
-	public Inbound(String xml) throws Exception  {
-		this.xml = xml;
+	public Inbound() {
+		
+	}
+	
+	public void execute(String xml) throws Exception {
 		if (getValueFromExpression(xml, "TRUMPIA").isEmpty()) {
 			return;
 		}
@@ -62,7 +63,6 @@ public class Inbound {
 		
 		writeLog();
 	}
-	
 	
 	// Getters for parameters
 	public String getTimeStamp() {
